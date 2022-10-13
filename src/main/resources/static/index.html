@@ -69,14 +69,14 @@
         let obj;
         let formData = new FormData();
         formData.append("file", fileuploadCompress.files[0]);
-        await fetch('http://localhost:8080/uploadtocompress', {
+        await fetch('https://spring-huffman-archiver.herokuapp.com/uploadtocompress', {
             method: "POST",
             body: formData
 
         }).then(result=> result.text()).then(text=> obj = text).then(()=> alert(obj));
         let jsObj = JSON.parse(obj);
         let id = jsObj.id;
-        let url = 'http://localhost:8080/filesdecompressed/'+id;
+        let url = 'https://spring-huffman-archiver.herokuapp.com/filesdecompressed/'+id;
         window.location.href =url;
 
     }
@@ -86,19 +86,19 @@
         let obj;
         let formData = new FormData();
         formData.append("file", fileuploadDecompress.files[0]);
-        await fetch('http://localhost:8080/uploadtodecompress',{
+        await fetch('https://spring-huffman-archiver.herokuapp.com/uploadtodecompress',{
             method: "POST",
             body: formData
         }).then(result=> result.text()).then(text=> obj=text).then(()=>alert(obj));
         let jsObj = JSON.parse(obj);
         let id = jsObj.id;
-        let url = 'http://localhost:8080/filescompressed/'+id;
+        let url = 'https://spring-huffman-archiver.herokuapp.com/filescompressed/'+id;
         window.location.href =url;
 
     }
     async function refreshDecompressedFiles() {
         let obj;
-        await fetch('http://localhost:8080/filesdecompressed', {
+        await fetch('https://spring-huffman-archiver.herokuapp.com/filesdecompressed', {
             method: "GET"
         }).then(result => result.text()).then(text => obj = text);
         let jsObj = JSON.parse(obj);
@@ -122,7 +122,7 @@
     }
     async function refreshCompressedFiles(){
         let obj;
-        await fetch('http://localhost:8080/filescompressed', {
+        await fetch('https://spring-huffman-archiver.herokuapp.com/filescompressed', {
             method: "GET"
         }).then(result => result.text()).then(text => obj = text);
         let jsObj = JSON.parse(obj);
