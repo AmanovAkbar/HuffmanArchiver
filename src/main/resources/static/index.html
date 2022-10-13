@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <title>Huffman Archiver</title>
+    <style>
+
+        dl {
+            border: 3px double #ccc;
+            padding: 0.5em;
+        }
+        dt {
+            float: left;
+            clear: left;
+            width: 100px;
+            text-align: right;
+            font-weight: bold;
+
+        }
+        dt::after {
+            content: ":";
+        }
+        dd {
+            margin: 0 0 0 110px;
+            padding: 0 0 0.5em 0;
+        }
+        * {
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .row {
+            display: flex;
+        }
+
+
+        .column {
+
+            flex: 50%;
+            padding: 10px;
+
+        }
+    </style>
+</head>
+<body style="background-color:#F0F0F0;">
+<h2>Huffman archiver</h2>
+<div class = "row">
+    <div class = "column" style = "background-color:#FFFFE0;">
+        <h3>Compress!</h3>
+        <input id="fileuploadCompress" type="file" name="fileuploadCompress" />
+        <button id="upload-button-compress" onclick="uploadFileCompress()"> Upload </button>
+        <br>
+        <button id="refresh-decompressed-files" onclick="refreshDecompressedFiles()"> Refresh </button>
+        <div id = "decompressed-files"></div>
+    </div>
+    <div class = "column" style = "background-color:#87CEFA;">
+        <h3>Decompress!</h3>
+        <input id="fileuploadDecompress" type="file" name="fileuploadDecompress" />
+        <button id="upload-button-decompress" onclick="uploadFileDecompress()"> Upload </button>
+        <br>
+        <button id="refresh-compressed-files" onclick="refreshCompressedFiles()"> Refresh </button>
+        <div id = "compressed-files"></div>
+    </div>
+</div>
+<script>
+
+    async function uploadFileCompress(){
+        let obj;
+        let formData = new FormData();
+        formData.append("file", fileuploadCompress.files[0]);
+        await fetch('http://localhost:8080/uploadtocompress', {
+            method: "POST",
+            body: formData
+
+        }).then(result=> result.text()).then(text=> obj = text).then(()=> alert(obj));
+        let jsObj = JSON.parse(obj);
+        let id = jsObj.id;
+        let url = 'http://localhost:8080/filesdecompressed/'+id;
+        window.location.href =url;
+
+    }
+
+
+    async function uploadFileDecompress(){
+        let obj;
+        let formData = new FormData();
+        formData.append("file", fileuploadDecompress.files[0]);
+        await fetch('http://localhost:8080/uploadtodecompress',{
+            method: "POST",
+            body: formData
+        }).then(result=> result.text()).then(text=> obj=text).then(()=>alert(obj));
+        let jsObj = JSON.parse(obj);
+        let id = jsObj.id;
+        let url = 'http://localhost:8080/filescompressed/'+id;
+        window.location.href =url;
+
+    }
+    async function refreshDecompressedFiles() {
+        let obj;
+        await fetch('http://localhost:8080/filesdecompressed', {
+            method: "GET"
+        }).then(result => result.text()).then(text => obj = text);
+        let jsObj = JSON.parse(obj);
+        console.log((jsObj));
+        let dcFContainer = document.getElementById('decompressed-files');
+        dcFContainer.innerHTML="";
+        let dList = document.createElement('dl');
+        dcFContainer.appendChild(dList);
+        for(let i = 0; i < jsObj.length; ++i){
+            let dt = document.createElement('dt');
+            let dd = document.createElement('dd');
+            dt.appendChild(document.createTextNode(jsObj[i].fileName));
+            let a = document.createElement('a');
+            a.setAttribute('href', jsObj[i].url);
+            a.appendChild(document.createTextNode(('link to compress')));
+            dd.appendChild(a);
+            dList.appendChild(dt);
+            dList.appendChild(dd);
+        }
+
+    }
+    async function refreshCompressedFiles(){
+        let obj;
+        await fetch('http://localhost:8080/filescompressed', {
+            method: "GET"
+        }).then(result => result.text()).then(text => obj = text);
+        let jsObj = JSON.parse(obj);
+        console.log((jsObj));
+        let dcFContainer = document.getElementById('compressed-files');
+        dcFContainer.innerHTML="";
+        let dList = document.createElement('dl');
+        dcFContainer.appendChild(dList);
+        for(let i = 0; i < jsObj.length; ++i){
+            let dt = document.createElement('dt');
+            let dd = document.createElement('dd');
+            dt.appendChild(document.createTextNode(jsObj[i].fileName));
+            let a = document.createElement('a');
+            a.setAttribute('href', jsObj[i].url);
+            a.appendChild(document.createTextNode(('link to Decompress')));
+            dd.appendChild(a);
+            dList.appendChild(dt);
+            dList.appendChild(dd);
+        }
+
+    }
+</script>
+</body>
+</html>

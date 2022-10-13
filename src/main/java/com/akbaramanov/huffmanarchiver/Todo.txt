@@ -1,0 +1,16 @@
+1)Rewrite huffmanCode class so that it is compatible with Multipart file
+    Suggestion: make compress and decompress methods return multipart files instead of void. Maybe rewrite "write" methods
+    so that they don't create files but rather inputStreams.
+//Done
+2)Service classes
+//Done
+3)Api layering/controllers
+//Done
+4)Frontend
+    Suggestion: ThymeLeaf?
+
+Thoughts:
+Keeping file data in h2 db seems like a good idea. Later can be rewritten to other databases to learn Docker, maybe?
+
+Deadline: October, 10
+
